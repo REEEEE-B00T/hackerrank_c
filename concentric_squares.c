@@ -8,9 +8,9 @@ int matrix_width(int n)
     return ((n*2) -1);
 }
 
-int offset(int outermost_number, int working_offset)
+int offset(int outermost_number, int current_number)
 {
-    return outermost_number - working_offset;    
+    return outermost_number - current_number;    
 }
 
 void initialize_matrix(int **matrix, int width, int n)
@@ -42,14 +42,14 @@ void print_matrix(int **matrix, int width, int n)
     }
 }
 
-void step_down_matrix(int **matrix, int matrix_width, int outermost_number, int working_offset)
+void step_down_matrix(int **matrix, int matrix_width, int outermost_number, int current_number)
 {
-    int _offset = offset(outermost_number, working_offset);
-    for(int i = _offset; i < matrix_width - _offset; i++)
+    int _offset = offset(outermost_number, current_number);
+    for(int i = _offset; i < (matrix_width - _offset); i++)
     {
-        for(int j = _offset; i < matrix_width - _offset; i++)
+        for(int j = _offset; j < (matrix_width - _offset); j++)
         {
-            matrix[i][j] -= 1;
+            matrix[j][i] -= 1;
         }
     }
 }
