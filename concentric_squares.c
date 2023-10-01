@@ -49,7 +49,7 @@ void step_down_matrix(int **matrix, int matrix_width, int outermost_number, int 
     {
         for(int j = _offset; j < (matrix_width - _offset); j++)
         {
-            matrix[j][i] -= 1;
+            matrix[i][j] -= 1;
         }
     }
 }
