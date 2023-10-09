@@ -25,6 +25,8 @@ struct document {
 };
 struct word get_word(char *text, int begin_idx )
 {  
+    
+    //need to malloc because a the print function doesn't detect '.' and a word can end in a '.' if it's the last word in a sentence.
     struct word w = {&text[begin_idx]};
     return w;
 }
