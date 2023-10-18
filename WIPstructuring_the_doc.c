@@ -27,27 +27,36 @@ struct document {
 
 struct word get_word(char* text)
 {
-    int i=0;
-    while(text[i] != ' ' || text[i] != '.')
+    int i = 0;
+    while(text[i] != ' ' && text[i] != '.')
     {
         i++;
     }
     
-    struct word w = {calloc(i, sizeof(char))};
-    memcpy(w.data, text, i-1);
+    struct word w = {calloc(i+1, sizeof(char))};
+    memcpy(w.data, text, i);
+    printf("%s", w.data);
     return w;
 }
 
 
 struct sentence get_sentence(char* text)
 {
-    struct sentence s = {calloc(1000 * sizeof(char*), 1000)};
+    struct sentence s = {calloc(100 * sizeof(char*), 100)};
     int i = 0, words = 0;
     while(text[i] != '.')
     {
-        if(text[i] == ' ')
+        if(i == 0 || text[i] == ' ')
         {
-            struct word w = get_word(&text[i]);
+            struct word w;
+            if(i==0)
+            {
+                w = get_word(&text[i]); //beginning of a sentence
+            }
+            else 
+            {
+                w = get_word(&text[i+1]); //start of a new word
+            }
             s.data[words] = w;
             words++;
         }
@@ -64,23 +73,32 @@ struct sentence get_sentence(char* text)
 struct paragraph get_paragraph(char* text)
 {
     
-    struct paragraph p = {calloc(1000, sizeof(struct sentence)), 1000};
+    struct paragraph p = {calloc(20, sizeof(struct sentence)), 20};
     
     int i=0, sentence_count=0;
-    
-    while(text[i] != '\n' || text[i] != '\0')
+    while(text[i] != '\n' && text[i] != '\0')
     {
-        if(text[i] == '.')
+        if(i == 0 || text[i] == '.')
         {
-            struct sentence s  = get_sentence(&text[i]);
+            struct sentence s;
+            if(i == 0)
+            {
+                s  = get_sentence(&text[i]); //the beginning of a paragraph
+            }
+            else 
+            {
+                s  = get_sentence(&text[i+1]); //start of a new sentence
+            }
+            
             p.data[sentence_count] = s;
             sentence_count++;
         }
         
+        
         i++;
     }
     
-    //realloc actual sentence count
+    //realloc to actual sentence count
     p.data = realloc(p.data, sizeof(struct sentence) * sentence_count);
     p.sentence_count = sentence_count;
     return p;
@@ -94,11 +112,19 @@ struct document get_document(char* text) {
     while(text[i] != '\0')
     {
        //new paragraph
-       if(i==0 || text[i] == '\n')
+       if(i == 0 || text[i]== '\n')
        {
-           struct paragraph p = get_paragraph(&text[i]);
-           doc.data[paragraphs] = p;
-           paragraphs++;
+           struct paragraph p;
+        if(i == 0)
+        {
+            p = get_paragraph(&text[i]); //beginning of document
+        }
+        else
+        {
+            p = get_paragraph(&text[i+1]); //the start of a new paragraph
+        }
+            doc.data[paragraphs] = p; 
+            paragraphs++;
        }
        i++;
     }
